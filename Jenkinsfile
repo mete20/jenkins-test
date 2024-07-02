@@ -1,57 +1,31 @@
 pipeline {
     agent any
 
-    environment {
-        VIRTUAL_ENV = "${WORKSPACE}/venv"
-    }
-
     stages {
-        stage('Setup Python Environment') {
+        stage('Setup') {
             steps {
-                // Install virtualenv
-                sh '/Users/metehan.yaka/Dev/jenkins-test/venv/bin/python3 -m venv venv'
-                // Activate virtualenv and install dependencies
-                sh '. ${VIRTUAL_ENV}/bin/activate && pip install -r requirements.txt'
-            }
-        }
-
-        stage('Lint') {
-            steps {
-                sh '. ${VIRTUAL_ENV}/bin/activate && flake8 .'
+                sh 'python3 -m venv venv' // Create a virtual environment
+                sh './venv/bin/pip install --upgrade pip' // Upgrade pip
+                sh './venv/bin/pip install -r requirements.txt' // Install dependencies
             }
         }
 
         stage('Test') {
             steps {
-                sh '. ${VIRTUAL_ENV}/bin/activate && pytest'
+                sh './venv/bin/python -m unittest discover' // Run tests
             }
         }
 
         stage('Build') {
             steps {
-                sh 'python3 app.py'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh 'tar -czf python_app.tar.gz app.py'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Dummy deploy step
-                sh 'echo "Deploying application..."'
-                // You can add real deployment commands here
+                sh './venv/bin/python hello.py' // Execute the Python script
             }
         }
     }
 
     post {
         always {
-            // Clean up virtual environment
-            sh 'rm -rf venv'
+            sh 'rm -rf venv' // Clean up virtual environment
         }
     }
 }
