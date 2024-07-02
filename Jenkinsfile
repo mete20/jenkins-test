@@ -9,6 +9,14 @@ pipeline {
                 }
             }
         }
+        stage('Install venv') {
+            steps{
+                script {
+                    sh 'apt-get update && apt-get install -y python3-venv'
+                }
+            }
+        }
+
         stage('Setup') {
             steps {
                 script {
