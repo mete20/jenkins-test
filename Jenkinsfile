@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Check Python') {
+            steps {
+                script {
+                    sh 'python3 --version'
+                }
+            }
+        }
         stage('Setup') {
             steps {
                 script {
