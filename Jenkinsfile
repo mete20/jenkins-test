@@ -13,7 +13,10 @@ pipeline {
             steps {
                 script {
                     echo 'Setting up the environment'
-                    sh 'python3 -m venv venv'
+                    sh '''
+                        python3 -m venv venv
+                        . venv/bin/activate
+                    '''
                 }
             }
         }
@@ -21,7 +24,10 @@ pipeline {
             steps {
                 script {
                     echo 'Installing dependencies'
-                    sh './venv/bin/pip install -r requirements.txt'
+                    sh '''
+                        . venv/bin/activate
+                        pip install -r requirements.txt
+                    '''
                 }
             }
         }
@@ -29,7 +35,10 @@ pipeline {
             steps {
                 script {
                     echo 'Running tests'
-                    sh './venv/bin/pytest'
+                    sh '''
+                        . venv/bin/activate
+                        pytest
+                    '''
                 }
             }
         }
