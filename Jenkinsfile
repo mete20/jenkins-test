@@ -2,15 +2,16 @@ pipeline {
     agent any
 
     environment {
-        PYENV_ROOT = sh(script: 'echo $HOME/.pyenv', returnStdout: true).trim()
-        PATH = "$PYENV_ROOT/bin:$PATH"
+        // Define environment variables here if needed
+        VIRTUAL_ENV = 'venv'  // Define the virtual environment directory
+        PATH = "${env.VIRTUAL_ENV}/bin:$PATH"  // Add virtual environment binaries to PATH
     }
 
     stages {
         stage('Check Python') {
             steps {
                 script {
-                    sh 'python --version'
+                    sh 'python3 --version'
                 }
             }
         }
@@ -19,9 +20,8 @@ pipeline {
                 script {
                     echo 'Setting up the virtual environment'
                     sh '''
-                        pyenv install 3.11.2
-                        pyenv virtualenv 3.11.2 my-python-env
-                        pyenv activate my-python-env
+                        python3 -m venv venv
+                        . venv/bin/activate
                     '''
                 }
             }
@@ -30,8 +30,10 @@ pipeline {
             steps {
                 script {
                     echo 'Installing dependencies'
-                    sh 'pip install --upgrade pip'
-                    sh 'pip install -r requirements.txt'
+                    sh '''
+                        pip install --upgrade pip
+                        pip install -r requirements.txt
+                    '''
                 }
             }
         }
@@ -47,7 +49,7 @@ pipeline {
             steps {
                 script {
                     echo 'Deactivating virtual environment'
-                    sh 'pyenv deactivate'
+                    sh 'deactivate || true'
                 }
             }
         }
