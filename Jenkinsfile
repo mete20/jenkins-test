@@ -8,6 +8,7 @@ pipeline {
     stages {
         stage('Setup Python Environment') {
             steps {
+                sh 'source venv/bin/activate'
                 // Install virtualenv
                 sh 'python3 -m venv venv'
                 // Activate virtualenv and install dependencies
