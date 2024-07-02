@@ -12,7 +12,13 @@ pipeline {
         stage('Install venv') {
             steps{
                 script {
-                    sh 'apt-get update && apt-get install -y python3-venv'
+                    echo 'Setting up the environment'
+                    sh '''
+                        sudo rm -rf /var/lib/apt/lists/*
+                        sudo apt-get update
+                        python3 -m venv venv
+                        . venv/bin/activate
+                    '''
                 }
             }
         }
