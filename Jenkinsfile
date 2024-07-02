@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        // Define environment variables here if needed
+        VIRTUAL_ENV = 'venv'  // Define the virtual environment directory
+        PATH = "${env.VIRTUAL_ENV}/bin:$PATH"  // Add virtual environment binaries to PATH
+    }
+
     stages {
         stage('Check Python') {
             steps {
@@ -9,12 +15,24 @@ pipeline {
                 }
             }
         }
+        stage('Setup Virtual Environment') {
+            steps {
+                script {
+                    echo 'Setting up the virtual environment'
+                    sh '''
+                        python3 -m venv venv
+                        . venv/bin/activate
+                    '''
+                }
+            }
+        }
         stage('Install Dependencies') {
             steps {
                 script {
                     echo 'Installing dependencies'
                     sh '''
-                        pip3 install --user -r requirements.txt
+                        pip install --upgrade pip
+                        pip install -r requirements.txt
                     '''
                 }
             }
@@ -24,6 +42,14 @@ pipeline {
                 script {
                     echo 'Running tests'
                     sh 'pytest'
+                }
+            }
+        }
+        stage('Deactivate Virtual Environment') {
+            steps {
+                script {
+                    echo 'Deactivating virtual environment'
+                    sh 'deactivate || true'
                 }
             }
         }
