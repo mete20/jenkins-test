@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     echo 'Setting up the environment'
-                    sh 'python3 -m venv venv'
+                    sh 'python -m venv venv'
                 }
             }
         }
